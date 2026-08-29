@@ -1,0 +1,361 @@
+.formica-stage-page {
+	--formica-stage-ink: #20231f;
+	--formica-stage-green: #37453d;
+	--formica-stage-cream: #f4ead7;
+	--formica-stage-paper: #fff8e9;
+	--formica-stage-orange: #ef5b2a;
+	--formica-stage-mustard: #e3a82b;
+	--formica-stage-plum: #4d2027;
+}
+
+.formica-stage-single,
+.formica-stage-single * {
+	box-sizing: border-box;
+}
+
+.formica-stage-shell {
+	margin-inline: auto;
+	max-width: 1200px;
+	padding-inline: max(24px, 5vw);
+}
+
+.formica-stage-hero {
+	background: var(--formica-stage-orange);
+	border-bottom: 3px solid var(--formica-stage-ink);
+	color: #fff;
+	overflow: hidden;
+	position: relative;
+}
+
+.formica-stage-hero::before,
+.formica-stage-hero::after {
+	content: "";
+	pointer-events: none;
+	position: absolute;
+}
+
+.formica-stage-hero::before {
+	border: 90px solid transparent;
+	border-bottom-color: var(--formica-stage-mustard);
+	right: 4%;
+	top: -35px;
+	transform: rotate(21deg);
+}
+
+.formica-stage-hero::after {
+	background: var(--formica-stage-plum);
+	border: 3px solid var(--formica-stage-ink);
+	bottom: -70px;
+	height: 150px;
+	left: 9%;
+	transform: rotate(-8deg);
+	width: 150px;
+}
+
+.formica-stage-hero__inner {
+	align-items: end;
+	display: grid;
+	gap: clamp(45px, 8vw, 130px);
+	grid-template-columns: minmax(0, 1fr) auto;
+	min-height: 580px;
+	padding-bottom: clamp(65px, 8vw, 110px);
+	padding-top: clamp(80px, 10vw, 140px);
+	position: relative;
+	z-index: 1;
+}
+
+.formica-stage-back {
+	color: inherit;
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: .08em;
+	margin-bottom: 55px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.formica-stage-back:hover {
+	text-decoration: underline;
+}
+
+.formica-stage-kicker,
+.formica-stage-section-label {
+	font-size: 12px;
+	font-weight: 900;
+	letter-spacing: .14em;
+	margin: 0 0 18px;
+	text-transform: uppercase;
+}
+
+.formica-stage-hero h1 {
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: clamp(54px, 9vw, 124px);
+	font-weight: 900;
+	letter-spacing: -.055em;
+	line-height: .85;
+	margin: 0;
+	max-width: 900px;
+	text-transform: uppercase;
+}
+
+.formica-stage-level {
+	background: var(--formica-stage-paper);
+	border: 2px solid var(--formica-stage-ink);
+	box-shadow: 5px 5px 0 var(--formica-stage-ink);
+	color: var(--formica-stage-ink);
+	display: inline-block;
+	font-size: 13px;
+	font-weight: 900;
+	margin: 30px 0 0;
+	padding: 10px 15px;
+	text-transform: uppercase;
+	transform: rotate(-1deg);
+}
+
+.formica-stage-date-badge {
+	align-items: center;
+	background: var(--formica-stage-cream);
+	border: 3px solid var(--formica-stage-ink);
+	box-shadow: 9px 9px 0 var(--formica-stage-ink);
+	color: var(--formica-stage-ink);
+	display: flex;
+	gap: 16px;
+	min-width: 260px;
+	padding: 30px 28px;
+	transform: rotate(2deg);
+}
+
+.formica-stage-date-badge strong {
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 78px;
+	line-height: .75;
+}
+
+.formica-stage-date-badge span {
+	font-size: 14px;
+	font-weight: 900;
+	line-height: 1.3;
+}
+
+.formica-stage-vichy {
+	background-color: var(--formica-stage-paper);
+	background-image: linear-gradient(90deg, rgba(239, 91, 42, .35) 50%, transparent 50%), linear-gradient(rgba(239, 91, 42, .35) 50%, transparent 50%);
+	background-size: 24px 24px;
+	border-bottom: 3px solid var(--formica-stage-ink);
+	height: 26px;
+}
+
+.formica-stage-details {
+	background-color: var(--formica-stage-cream);
+	background-image: radial-gradient(rgba(32, 35, 31, .11) 1px, transparent 1px);
+	background-size: 18px 18px;
+	padding: clamp(80px, 10vw, 140px) 0;
+}
+
+.formica-stage-details__grid {
+	align-items: start;
+	display: grid;
+	gap: clamp(55px, 9vw, 130px);
+	grid-template-columns: minmax(0, 1.5fr) minmax(290px, .7fr);
+}
+
+.formica-stage-section-label {
+	color: var(--formica-stage-orange);
+}
+
+.formica-stage-description h2,
+.formica-stage-practical h2,
+.formica-stage-shows h2 {
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: clamp(42px, 6vw, 76px);
+	font-weight: 900;
+	letter-spacing: -.04em;
+	line-height: .95;
+	margin: 0 0 40px;
+	text-transform: uppercase;
+}
+
+.formica-stage-rich-text {
+	font-size: clamp(19px, 2vw, 24px);
+	line-height: 1.55;
+}
+
+.formica-stage-bring {
+	background: var(--formica-stage-mustard);
+	border: 3px solid var(--formica-stage-ink);
+	box-shadow: 8px 8px 0 var(--formica-stage-ink);
+	margin-top: 55px;
+	padding: clamp(26px, 4vw, 42px);
+	transform: rotate(-1deg);
+}
+
+.formica-stage-bring h3 {
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 30px;
+	margin: 0 0 14px;
+	text-transform: uppercase;
+}
+
+.formica-stage-bring p:last-child {
+	margin-bottom: 0;
+}
+
+.formica-stage-practical {
+	background: var(--formica-stage-green);
+	border: 3px solid var(--formica-stage-ink);
+	box-shadow: 10px 10px 0 var(--formica-stage-ink);
+	color: #fff;
+	padding: clamp(28px, 4vw, 44px);
+	position: sticky;
+	top: 120px;
+}
+
+.formica-stage-practical h2 {
+	font-size: clamp(36px, 4vw, 50px);
+	margin-bottom: 30px;
+}
+
+.formica-stage-fact {
+	border-top: 1px solid rgba(255, 255, 255, .38);
+	padding: 19px 0;
+}
+
+.formica-stage-fact span,
+.formica-stage-fact strong {
+	display: block;
+}
+
+.formica-stage-fact span {
+	font-size: 10px;
+	font-weight: 900;
+	letter-spacing: .12em;
+	margin-bottom: 6px;
+	text-transform: uppercase;
+}
+
+.formica-stage-fact strong {
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+.formica-stage-register {
+	background: var(--formica-stage-orange);
+	border: 2px solid var(--formica-stage-ink);
+	box-shadow: 5px 5px 0 var(--formica-stage-ink);
+	color: #fff;
+	display: block;
+	font-size: 13px;
+	font-weight: 900;
+	margin-top: 28px;
+	padding: 17px 20px;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition: .18s ease;
+}
+
+.formica-stage-register:hover {
+	box-shadow: 1px 1px 0 var(--formica-stage-ink);
+	transform: translate(4px, 4px);
+}
+
+.formica-stage-shows {
+	background: var(--formica-stage-plum);
+	border-top: 3px solid var(--formica-stage-ink);
+	color: #fff;
+	padding: clamp(75px, 9vw, 120px) 0;
+}
+
+.formica-stage-show-list {
+	border-top: 2px solid currentColor;
+}
+
+.formica-stage-show {
+	align-items: center;
+	border-bottom: 2px solid currentColor;
+	display: flex;
+	gap: 30px;
+	justify-content: space-between;
+	padding: 28px 0;
+}
+
+.formica-stage-show h3 {
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: clamp(27px, 4vw, 46px);
+	line-height: 1;
+	margin: 0 0 8px;
+	text-transform: uppercase;
+}
+
+.formica-stage-show time,
+.formica-stage-show p {
+	font-size: 13px;
+	font-weight: 700;
+	margin: 3px 0 0;
+}
+
+.formica-stage-show a {
+	border: 2px solid currentColor;
+	color: inherit;
+	font-size: 12px;
+	font-weight: 900;
+	padding: 14px 17px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+@media (max-width: 800px) {
+	.formica-stage-hero__inner,
+	.formica-stage-details__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.formica-stage-hero__inner {
+		align-items: start;
+		gap: 55px;
+		min-height: 0;
+	}
+
+	.formica-stage-date-badge {
+		justify-self: start;
+	}
+
+	.formica-stage-practical {
+		position: static;
+	}
+}
+
+@media (max-width: 520px) {
+	.formica-stage-shell {
+		padding-inline: 20px;
+	}
+
+	.formica-stage-hero h1 {
+		font-size: clamp(42px, 14vw, 64px);
+	}
+
+	.formica-stage-back {
+		margin-bottom: 38px;
+	}
+
+	.formica-stage-date-badge {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.formica-stage-date-badge strong {
+		font-size: 62px;
+	}
+
+	.formica-stage-show {
+		align-items: start;
+		flex-direction: column;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.formica-stage-register {
+		transition: none;
+	}
+}
