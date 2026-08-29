@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "formica/events-list",
+	"version": "1.1.0",
+	"title": "Liste des spectacles ou stages",
+	"category": "widgets",
+	"icon": "calendar-alt",
+	"description": "Affiche automatiquement les spectacles ou les stages, avec les activités associées.",
+	"textdomain": "formica-dates",
+	"attributes": {
+		"contentType": {
+			"type": "string",
+			"default": "events",
+			"enum": ["events", "stages"]
+		},
+		"mode": {
+			"type": "string",
+			"default": "upcoming",
+			"enum": ["upcoming", "past"]
+		},
+		"layout": {
+			"type": "string",
+			"default": "detailed",
+			"enum": ["detailed", "compact"]
+		},
+		"postsToShow": {
+			"type": "number",
+			"default": 6
+		},
+		"showBooking": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"align": ["wide", "full"],
+		"html": false
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"editorStyle": "file:./style.css"
+}
