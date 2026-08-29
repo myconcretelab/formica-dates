@@ -18,6 +18,7 @@ $venue       = get_post_meta( $stage_id, '_formica_stage_venue', true );
 $city        = get_post_meta( $stage_id, '_formica_stage_city', true );
 $bring       = get_post_meta( $stage_id, '_formica_stage_bring', true );
 $booking     = get_post_meta( $stage_id, '_formica_stage_booking', true );
+$prices      = function_exists( 'formica_dates_helloasso_price_labels' ) ? formica_dates_helloasso_price_labels( $stage_id ) : array();
 $event_ids   = formica_dates_get_related_event_ids( $stage_id, 'publish' );
 $location    = implode( ', ', array_filter( array( $venue, $city ) ) );
 $date_label  = $start ? wp_date( 'l j F Y', $start->getTimestamp(), wp_timezone() ) : '';
@@ -95,6 +96,12 @@ if ( $end ) {
 						<div class="formica-stage-fact">
 							<span><?php esc_html_e( 'Lieu', 'formica-dates' ); ?></span>
 							<strong><?php echo esc_html( $location ); ?></strong>
+						</div>
+					<?php endif; ?>
+					<?php if ( $prices ) : ?>
+						<div class="formica-stage-fact">
+							<span><?php echo esc_html( count( $prices ) > 1 ? __( 'Tarifs', 'formica-dates' ) : __( 'Tarif', 'formica-dates' ) ); ?></span>
+							<strong><?php echo wp_kses( implode( '<br>', array_map( 'esc_html', $prices ) ), array( 'br' => array() ) ); ?></strong>
 						</div>
 					<?php endif; ?>
 					<?php if ( $booking ) : ?>
