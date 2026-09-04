@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Formica Dates
  * Description: Gestion centralisée des spectacles et des stages, avec leurs dates et leurs associations.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Compagnie Formica
  * Text Domain: formica-dates
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const FORMICA_DATES_VERSION = '1.3.0';
+const FORMICA_DATES_VERSION = '1.4.0';
 const FORMICA_DATES_POST_TYPE = 'formica_event';
 const FORMICA_DATES_STAGE_POST_TYPE = 'formica_stage';
 
@@ -88,25 +88,35 @@ function formica_dates_register_post_type() {
 	);
 
 	$meta_fields = array(
-		'_formica_event_datetime' => array(
+		'_formica_event_datetime'  => array(
 			'type'              => 'string',
 			'sanitize_callback' => 'formica_dates_sanitize_datetime',
 		),
-		'_formica_event_venue'    => array(
+		'_formica_event_venue'     => array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		),
-		'_formica_event_city'     => array(
+		'_formica_event_city'      => array(
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		),
-		'_formica_event_booking'  => array(
+		'_formica_event_booking'   => array(
 			'type'              => 'string',
 			'sanitize_callback' => 'esc_url_raw',
 		),
-		'_formica_event_variant'  => array(
+		'_formica_event_variant'   => array(
 			'type'              => 'string',
 			'sanitize_callback' => 'formica_dates_sanitize_variant',
+		),
+		'_formica_event_image_ids' => array(
+			'type'              => 'array',
+			'sanitize_callback' => 'formica_dates_sanitize_image_ids',
+			'show_in_rest'      => array(
+				'schema' => array(
+					'type'  => 'array',
+					'items' => array( 'type' => 'integer' ),
+				),
+			),
 		),
 	);
 
@@ -115,14 +125,14 @@ function formica_dates_register_post_type() {
 			FORMICA_DATES_POST_TYPE,
 			$meta_key,
 			array_merge(
-				$args,
 				array(
 					'single'        => true,
 					'show_in_rest'  => true,
 					'auth_callback' => static function () {
 						return current_user_can( 'edit_posts' );
 					},
-				)
+				),
+				$args
 			)
 		);
 	}
@@ -243,6 +253,100 @@ function formica_dates_sanitize_related_ids( $values ) {
 }
 
 /**
+ * Keeps only image attachment IDs, preserving their chosen order.
+ */
+function formica_dates_sanitize_image_ids( $values ) {
+	if ( is_string( $values ) ) {
+		$values = explode( ',', $values );
+	}
+
+	$values = is_array( $values ) ? $values : array();
+	$ids    = array_filter( array_map( 'absint', $values ) );
+	$ids    = array_filter(
+		$ids,
+		static function ( $attachment_id ) {
+			return 'attachment' === get_post_type( $attachment_id ) && wp_attachment_is_image( $attachment_id );
+		}
+	);
+
+	return array_values( array_unique( $ids ) );
+}
+
+/**
+ * Registers the short public URLs used to share event images.
+ */
+function formica_dates_register_image_routes() {
+	add_rewrite_rule(
+		'^photo-evenement/([0-9]+)/([0-9]+)/?$',
+		'index.php?formica_event_image=$matches[1]&formica_attachment=$matches[2]',
+		'top'
+	);
+}
+add_action( 'init', 'formica_dates_register_image_routes' );
+
+/**
+ * Adds the event-image identifiers to WordPress' public query variables.
+ */
+function formica_dates_image_query_vars( $query_vars ) {
+	$query_vars[] = 'formica_event_image';
+	$query_vars[] = 'formica_attachment';
+	return $query_vars;
+}
+add_filter( 'query_vars', 'formica_dates_image_query_vars' );
+
+/**
+ * Returns the stable URL shared for one image belonging to an event.
+ */
+function formica_dates_get_image_share_url( $event_id, $attachment_id ) {
+	$event_id      = absint( $event_id );
+	$attachment_id = absint( $attachment_id );
+
+	if ( get_option( 'permalink_structure' ) ) {
+		return home_url( user_trailingslashit( 'photo-evenement/' . $event_id . '/' . $attachment_id ) );
+	}
+
+	return add_query_arg(
+		array(
+			'formica_event_image' => $event_id,
+			'formica_attachment'  => $attachment_id,
+		),
+		home_url( '/' )
+	);
+}
+
+/**
+ * Redirects a valid short event-image URL to the original media file.
+ */
+function formica_dates_redirect_shared_image() {
+	$event_id      = absint( get_query_var( 'formica_event_image' ) );
+	$attachment_id = absint( get_query_var( 'formica_attachment' ) );
+
+	if ( ! $event_id || ! $attachment_id ) {
+		return;
+	}
+
+	$image_ids = formica_dates_sanitize_image_ids( get_post_meta( $event_id, '_formica_event_image_ids', true ) );
+	$image_url = wp_get_attachment_url( $attachment_id );
+
+	if (
+		FORMICA_DATES_POST_TYPE !== get_post_type( $event_id ) ||
+		'publish' !== get_post_status( $event_id ) ||
+		! in_array( $attachment_id, $image_ids, true ) ||
+		! $image_url
+	) {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+		return;
+	}
+
+	wp_redirect( $image_url, 302, 'Formica Dates' ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+	exit;
+}
+add_action( 'template_redirect', 'formica_dates_redirect_shared_image' );
+
+/**
  * Formats a stored datetime for a datetime-local field.
  */
 function formica_dates_datetime_field_value( $value ) {
@@ -325,14 +429,48 @@ function formica_dates_add_meta_boxes() {
 add_action( 'add_meta_boxes', 'formica_dates_add_meta_boxes' );
 
 /**
+ * Loads the WordPress media picker on Date edit screens.
+ */
+function formica_dates_enqueue_event_admin_assets( $hook_suffix ) {
+	if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
+		return;
+	}
+
+	$screen = get_current_screen();
+	if ( ! $screen || FORMICA_DATES_POST_TYPE !== $screen->post_type ) {
+		return;
+	}
+
+	$script_path = __DIR__ . '/assets/event-images-admin.js';
+	$style_path  = __DIR__ . '/assets/event-images-admin.css';
+
+	wp_enqueue_media();
+	wp_enqueue_script(
+		'formica-dates-event-images-admin',
+		plugins_url( 'assets/event-images-admin.js', __FILE__ ),
+		array(),
+		file_exists( $script_path ) ? (string) filemtime( $script_path ) : FORMICA_DATES_VERSION,
+		true
+	);
+	wp_enqueue_style(
+		'formica-dates-event-images-admin',
+		plugins_url( 'assets/event-images-admin.css', __FILE__ ),
+		array(),
+		file_exists( $style_path ) ? (string) filemtime( $style_path ) : FORMICA_DATES_VERSION
+	);
+}
+add_action( 'admin_enqueue_scripts', 'formica_dates_enqueue_event_admin_assets' );
+
+/**
  * Outputs the event form.
  */
 function formica_dates_render_meta_box( $post ) {
-	$datetime = get_post_meta( $post->ID, '_formica_event_datetime', true );
-	$venue    = get_post_meta( $post->ID, '_formica_event_venue', true );
-	$city     = get_post_meta( $post->ID, '_formica_event_city', true );
-	$booking  = get_post_meta( $post->ID, '_formica_event_booking', true );
-	$variant  = get_post_meta( $post->ID, '_formica_event_variant', true ) ?: 'orange';
+	$datetime  = get_post_meta( $post->ID, '_formica_event_datetime', true );
+	$venue     = get_post_meta( $post->ID, '_formica_event_venue', true );
+	$city      = get_post_meta( $post->ID, '_formica_event_city', true );
+	$booking   = get_post_meta( $post->ID, '_formica_event_booking', true );
+	$variant   = get_post_meta( $post->ID, '_formica_event_variant', true ) ?: 'orange';
+	$image_ids = formica_dates_sanitize_image_ids( get_post_meta( $post->ID, '_formica_event_image_ids', true ) );
 	$datetime = formica_dates_datetime_field_value( $datetime );
 	$stages   = get_posts(
 		array(
@@ -378,6 +516,37 @@ function formica_dates_render_meta_box( $post ) {
 				<option value="green" <?php selected( $variant, 'green' ); ?>><?php esc_html_e( 'Vert', 'formica-dates' ); ?></option>
 			</select>
 		</p>
+		<div
+			class="formica-event-images"
+			data-share-url-template="<?php echo esc_attr( formica_dates_get_image_share_url( $post->ID, 999999999 ) ); ?>"
+			data-copy-label="<?php esc_attr_e( 'Copier le lien', 'formica-dates' ); ?>"
+			data-copied-label="<?php esc_attr_e( 'Lien copié !', 'formica-dates' ); ?>"
+			data-remove-label="<?php esc_attr_e( 'Retirer', 'formica-dates' ); ?>"
+		>
+			<h3><?php esc_html_e( 'Images à partager', 'formica-dates' ); ?></h3>
+			<p class="description"><?php esc_html_e( 'Ajoutez une ou plusieurs images, puis enregistrez la Date. Chaque image reçoit un lien simple à copier et à envoyer par SMS dès que la Date est publiée.', 'formica-dates' ); ?></p>
+			<input id="formica-event-image-ids" name="formica_event_image_ids" type="hidden" value="<?php echo esc_attr( implode( ',', $image_ids ) ); ?>">
+			<ul class="formica-event-images__list">
+				<?php foreach ( $image_ids as $image_id ) : ?>
+					<?php
+					$image_url = wp_get_attachment_url( $image_id );
+					$share_url = formica_dates_get_image_share_url( $post->ID, $image_id );
+					?>
+					<li class="formica-event-images__item" data-attachment-id="<?php echo esc_attr( $image_id ); ?>">
+						<?php echo wp_get_attachment_image( $image_id, 'thumbnail' ); ?>
+						<div class="formica-event-images__details">
+							<strong><?php echo esc_html( get_the_title( $image_id ) ?: basename( (string) $image_url ) ); ?></strong>
+							<input class="formica-event-images__url" type="text" value="<?php echo esc_attr( $share_url ); ?>" readonly>
+							<div>
+								<button class="button formica-event-images__copy" type="button"><?php esc_html_e( 'Copier le lien', 'formica-dates' ); ?></button>
+								<button class="button-link-delete formica-event-images__remove" type="button"><?php esc_html_e( 'Retirer', 'formica-dates' ); ?></button>
+							</div>
+						</div>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<button class="button button-secondary formica-event-images__add" type="button"><?php esc_html_e( 'Ajouter des images', 'formica-dates' ); ?></button>
+		</div>
 		<div class="formica-event-fields__relations">
 			<h3><?php esc_html_e( 'Stages associés', 'formica-dates' ); ?></h3>
 			<?php if ( $stages ) : ?>
@@ -550,6 +719,13 @@ function formica_dates_save_event( $post_id ) {
 		} else {
 			update_post_meta( $post_id, $meta_key, $value );
 		}
+	}
+
+	$image_ids = isset( $_POST['formica_event_image_ids'] ) ? formica_dates_sanitize_image_ids( wp_unslash( $_POST['formica_event_image_ids'] ) ) : array();
+	if ( $image_ids ) {
+		update_post_meta( $post_id, '_formica_event_image_ids', $image_ids );
+	} else {
+		delete_post_meta( $post_id, '_formica_event_image_ids' );
 	}
 
 	$stage_ids = isset( $_POST['formica_event_stage_ids'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['formica_event_stage_ids'] ) ) : array();
@@ -827,6 +1003,30 @@ function formica_dates_get_summary( $post_id ) {
 }
 
 /**
+ * Renders the simple public links for an event's attached images.
+ */
+function formica_dates_render_image_links( $post_id ) {
+	$image_ids = formica_dates_sanitize_image_ids( get_post_meta( $post_id, '_formica_event_image_ids', true ) );
+
+	if ( ! $image_ids ) {
+		return '';
+	}
+
+	ob_start();
+	?>
+	<nav class="formica-date-card__images" aria-label="<?php esc_attr_e( 'Photos de l’événement', 'formica-dates' ); ?>">
+		<strong><?php esc_html_e( 'Photos', 'formica-dates' ); ?></strong>
+		<span>
+			<?php foreach ( $image_ids as $index => $image_id ) : ?>
+				<a href="<?php echo esc_url( formica_dates_get_image_share_url( $post_id, $image_id ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( sprintf( __( 'Photo %d ↗', 'formica-dates' ), $index + 1 ) ); ?></a>
+			<?php endforeach; ?>
+		</span>
+	</nav>
+	<?php
+	return ob_get_clean();
+}
+
+/**
  * Formats a start and optional end date for related-item details.
  */
 function formica_dates_format_datetime_range( $start, $end = false ) {
@@ -965,6 +1165,7 @@ function formica_dates_render_events_block( $attributes ) {
 				$location = implode( ', ', array_filter( array( $venue, $city ) ) );
 				$summary  = $is_stage ? formica_dates_get_summary( $post_id ) : '';
 				$related  = formica_dates_render_related_items( $post_id, $post_type );
+				$images   = $is_stage ? '' : formica_dates_render_image_links( $post_id );
 				?>
 				<?php if ( 'compact' === $layout ) : ?>
 					<article class="formica-date-compact">
@@ -977,6 +1178,7 @@ function formica_dates_render_events_block( $attributes ) {
 							<?php if ( $is_stage ) : ?></a><?php endif; ?>
 						</h3>
 						<?php if ( $location ) : ?><p><?php echo esc_html( $location ); ?></p><?php endif; ?>
+						<?php echo $images; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<?php echo $related; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</article>
 				<?php else : ?>
@@ -998,6 +1200,7 @@ function formica_dates_render_events_block( $attributes ) {
 						<?php if ( $show_booking && $booking ) : ?>
 							<a class="formica-date-card__booking" href="<?php echo esc_url( $booking ); ?>"><?php echo esc_html( $is_stage ? __( 'S’inscrire ↗', 'formica-dates' ) : __( 'Réserver ↗', 'formica-dates' ) ); ?></a>
 						<?php endif; ?>
+						<?php echo $images; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<?php echo $related; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</article>
 				<?php endif; ?>

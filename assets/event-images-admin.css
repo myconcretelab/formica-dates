@@ -1,0 +1,61 @@
+.formica-event-images {
+	border-top: 1px solid #dcdcde;
+	margin-top: 24px;
+	padding-top: 8px;
+}
+
+.formica-event-images__list {
+	display: grid;
+	gap: 10px;
+	margin: 14px 0;
+}
+
+.formica-event-images__item {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	display: grid;
+	gap: 12px;
+	grid-template-columns: 90px minmax(0, 1fr);
+	margin: 0;
+	padding: 10px;
+}
+
+.formica-event-images__item img {
+	height: 76px;
+	object-fit: cover;
+	width: 90px;
+}
+
+.formica-event-images__details {
+	display: grid;
+	gap: 7px;
+	min-width: 0;
+}
+
+.formica-event-images__details > strong {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.formica-event-images__url {
+	font-family: monospace;
+	width: 100%;
+}
+
+.formica-event-images__details > div {
+	display: flex;
+	gap: 12px;
+}
+
+@media (max-width: 782px) {
+	.formica-event-images__item {
+		grid-template-columns: 70px minmax(0, 1fr);
+	}
+
+	.formica-event-images__item img {
+		height: 60px;
+		width: 70px;
+	}
+}

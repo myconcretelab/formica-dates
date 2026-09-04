@@ -99,6 +99,32 @@
 	text-transform: uppercase;
 }
 
+.formica-date-card__images {
+	align-items: baseline;
+	display: flex;
+	font-size: 12px;
+	gap: 12px;
+	grid-column: 2 / -1;
+}
+
+.formica-date-card__images > strong {
+	letter-spacing: .09em;
+	text-transform: uppercase;
+}
+
+.formica-date-card__images > span {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 14px;
+}
+
+.formica-date-card__images a {
+	border-bottom: 1px solid currentColor;
+	color: inherit;
+	font-weight: 800;
+	text-decoration: none;
+}
+
 .formica-date-card__related {
 	border-top: 1px solid currentColor;
 	display: grid;
@@ -199,6 +225,10 @@
 	width: 100%;
 }
 
+.formica-date-compact .formica-date-card__images {
+	grid-column: 2 / -1;
+}
+
 .formica-dates__empty {
 	font-size: 18px;
 	font-style: italic;
@@ -214,6 +244,7 @@
 	.formica-date-card__related { grid-template-columns: 1fr; }
 	.formica-date-compact { grid-template-columns: 130px 1fr; }
 	.formica-date-compact p { grid-column: 2; }
+	.formica-date-compact .formica-date-card__images { grid-column: 2; }
 	.formica-date-compact .formica-date-card__related { grid-template-columns: 1fr; }
 }
 
@@ -223,6 +254,8 @@
 	.formica-date-card__title { font-size: 27px; }
 	.formica-date-compact { gap: 8px; grid-template-columns: 1fr; }
 	.formica-date-compact p { grid-column: 1; }
+	.formica-date-card__images,
+	.formica-date-compact .formica-date-card__images { grid-column: 1 / -1; }
 	.formica-date-compact .formica-date-card__related { grid-column: 1; margin-top: 8px; }
 	.formica-related-item { grid-template-columns: 1fr; }
 	.formica-related-item > a { justify-self: start; }
