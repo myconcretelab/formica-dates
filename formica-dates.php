@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Formica Dates
  * Description: Gestion centralisée des spectacles et des stages, avec leurs dates et leurs associations.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: Compagnie Formica
  * Text Domain: formica-dates
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const FORMICA_DATES_VERSION = '1.4.1';
+const FORMICA_DATES_VERSION = '1.4.2';
 const FORMICA_DATES_POST_TYPE = 'formica_event';
 const FORMICA_DATES_STAGE_POST_TYPE = 'formica_stage';
 
@@ -512,7 +512,7 @@ function formica_dates_render_meta_box( $post ) {
 			<label for="formica-event-variant"><strong><?php esc_html_e( 'Couleur', 'formica-dates' ); ?></strong></label><br>
 			<select id="formica-event-variant" name="formica_event_variant">
 				<option value="orange" <?php selected( $variant, 'orange' ); ?>><?php esc_html_e( 'Orange', 'formica-dates' ); ?></option>
-				<option value="paper" <?php selected( $variant, 'paper' ); ?>><?php esc_html_e( 'Crème et vichy', 'formica-dates' ); ?></option>
+				<option value="paper" <?php selected( $variant, 'paper' ); ?>><?php esc_html_e( 'Contraste', 'formica-dates' ); ?></option>
 				<option value="green" <?php selected( $variant, 'green' ); ?>><?php esc_html_e( 'Vert', 'formica-dates' ); ?></option>
 			</select>
 		</p>
