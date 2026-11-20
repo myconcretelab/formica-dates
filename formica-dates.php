@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Formica Dates
  * Description: Gestion centralisée des spectacles et des stages, avec leurs dates et leurs associations.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Compagnie Formica
  * Text Domain: formica-dates
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const FORMICA_DATES_VERSION = '1.4.0';
+const FORMICA_DATES_VERSION = '1.4.1';
 const FORMICA_DATES_POST_TYPE = 'formica_event';
 const FORMICA_DATES_STAGE_POST_TYPE = 'formica_stage';
 

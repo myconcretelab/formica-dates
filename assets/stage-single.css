@@ -1,11 +1,12 @@
 .formica-stage-page {
-	--formica-stage-ink: #20231f;
-	--formica-stage-green: #37453d;
-	--formica-stage-cream: #f4ead7;
-	--formica-stage-paper: #fff8e9;
-	--formica-stage-orange: #ef5b2a;
-	--formica-stage-mustard: #e3a82b;
-	--formica-stage-plum: #4d2027;
+	--formica-stage-ink: var(--formica-ink, #20231f);
+	--formica-stage-base: var(--formica-base, #f4ead7);
+	--formica-stage-primary: var(--formica-primary, #ef5b2a);
+	--formica-stage-secondary: var(--formica-secondary, #e3a82b);
+	--formica-stage-feature: var(--formica-feature, #37453d);
+	--formica-stage-detail: var(--formica-detail, #4d2027);
+	--formica-stage-surface: var(--formica-surface, #fff8e9);
+	--formica-stage-rule: var(--formica-rule, color-mix(in srgb, currentColor 35%, transparent));
 }
 
 .formica-stage-single,
@@ -20,9 +21,9 @@
 }
 
 .formica-stage-hero {
-	background: var(--formica-stage-orange);
+	background: var(--formica-stage-primary);
 	border-bottom: 3px solid var(--formica-stage-ink);
-	color: #fff;
+	color: var(--formica-on-primary, #000);
 	overflow: hidden;
 	position: relative;
 }
@@ -36,14 +37,14 @@
 
 .formica-stage-hero::before {
 	border: 90px solid transparent;
-	border-bottom-color: var(--formica-stage-mustard);
+	border-bottom-color: var(--formica-stage-secondary);
 	right: 4%;
 	top: -35px;
 	transform: rotate(21deg);
 }
 
 .formica-stage-hero::after {
-	background: var(--formica-stage-plum);
+	background: var(--formica-stage-detail);
 	border: 3px solid var(--formica-stage-ink);
 	bottom: -70px;
 	height: 150px;
@@ -100,10 +101,10 @@
 }
 
 .formica-stage-level {
-	background: var(--formica-stage-paper);
+	background: var(--formica-stage-surface);
 	border: 2px solid var(--formica-stage-ink);
 	box-shadow: 5px 5px 0 var(--formica-stage-ink);
-	color: var(--formica-stage-ink);
+	color: var(--formica-on-surface, #20231f);
 	display: inline-block;
 	font-size: 13px;
 	font-weight: 900;
@@ -115,7 +116,7 @@
 
 .formica-stage-date-badge {
 	align-items: center;
-	background: var(--formica-stage-cream);
+	background: var(--formica-stage-base);
 	border: 3px solid var(--formica-stage-ink);
 	box-shadow: 9px 9px 0 var(--formica-stage-ink);
 	color: var(--formica-stage-ink);
@@ -139,17 +140,19 @@
 }
 
 .formica-stage-vichy {
-	background-color: var(--formica-stage-paper);
-	background-image: linear-gradient(90deg, rgba(239, 91, 42, .35) 50%, transparent 50%), linear-gradient(rgba(239, 91, 42, .35) 50%, transparent 50%);
+	--formica-stage-check: color-mix(in srgb, var(--formica-stage-primary) 35%, transparent);
+	background-color: var(--formica-stage-surface);
+	background-image: var(--formica-vichy, linear-gradient(90deg, var(--formica-stage-check) 50%, transparent 0), linear-gradient(var(--formica-stage-check) 50%, transparent 0));
 	background-size: 24px 24px;
 	border-bottom: 3px solid var(--formica-stage-ink);
 	height: 26px;
 }
 
 .formica-stage-details {
-	background-color: var(--formica-stage-cream);
-	background-image: radial-gradient(rgba(32, 35, 31, .11) 1px, transparent 1px);
+	background-color: var(--formica-stage-base);
+	background-image: radial-gradient(var(--formica-stage-rule) 1px, transparent 1px);
 	background-size: 18px 18px;
+	color: var(--formica-stage-ink);
 	padding: clamp(80px, 10vw, 140px) 0;
 }
 
@@ -161,7 +164,8 @@
 }
 
 .formica-stage-section-label {
-	color: var(--formica-stage-orange);
+	text-decoration: underline var(--formica-stage-detail) .18em;
+	text-underline-offset: .25em;
 }
 
 .formica-stage-description h2,
@@ -182,9 +186,10 @@
 }
 
 .formica-stage-bring {
-	background: var(--formica-stage-mustard);
+	background: var(--formica-stage-secondary);
 	border: 3px solid var(--formica-stage-ink);
 	box-shadow: 8px 8px 0 var(--formica-stage-ink);
+	color: var(--formica-on-secondary, #20231f);
 	margin-top: 55px;
 	padding: clamp(26px, 4vw, 42px);
 	transform: rotate(-1deg);
@@ -202,10 +207,10 @@
 }
 
 .formica-stage-practical {
-	background: var(--formica-stage-green);
+	background: var(--formica-stage-feature);
 	border: 3px solid var(--formica-stage-ink);
 	box-shadow: 10px 10px 0 var(--formica-stage-ink);
-	color: #fff;
+	color: var(--formica-on-feature, #fff);
 	padding: clamp(28px, 4vw, 44px);
 	position: sticky;
 	top: 120px;
@@ -217,7 +222,7 @@
 }
 
 .formica-stage-fact {
-	border-top: 1px solid rgba(255, 255, 255, .38);
+	border-top: 1px solid var(--formica-stage-rule);
 	padding: 19px 0;
 }
 
@@ -240,10 +245,10 @@
 }
 
 .formica-stage-register {
-	background: var(--formica-stage-orange);
+	background: var(--formica-stage-primary);
 	border: 2px solid var(--formica-stage-ink);
 	box-shadow: 5px 5px 0 var(--formica-stage-ink);
-	color: #fff;
+	color: var(--formica-on-primary, #000);
 	display: block;
 	font-size: 13px;
 	font-weight: 900;
@@ -261,9 +266,9 @@
 }
 
 .formica-stage-shows {
-	background: var(--formica-stage-plum);
+	background: var(--formica-stage-detail);
 	border-top: 3px solid var(--formica-stage-ink);
-	color: #fff;
+	color: var(--formica-on-detail, #fff);
 	padding: clamp(75px, 9vw, 120px) 0;
 }
 

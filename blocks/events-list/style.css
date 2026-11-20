@@ -1,15 +1,11 @@
 .wp-block-formica-events-list.formica-dates {
-	--formica-ink: #20231f;
-	--formica-green: #37453d;
-	--formica-cream: #f4ead7;
-	--formica-paper: #fff8e9;
-	--formica-orange: #ef5b2a;
-	border-top: 3px solid var(--formica-ink);
+	--formica-dates-border: var(--formica-ink, #20231f);
+	border-top: 3px solid var(--formica-dates-border);
 }
 
 .formica-date-card {
 	align-items: center;
-	border-bottom: 3px solid var(--formica-ink);
+	border-bottom: 3px solid var(--formica-dates-border);
 	display: grid;
 	gap: 24px;
 	grid-template-columns: 180px minmax(260px, 1fr) 230px 150px;
@@ -18,9 +14,9 @@
 }
 
 .formica-date-card:hover { transform: translateX(8px); }
-.formica-date-card--orange { background: var(--formica-orange); color: #fff; }
-.formica-date-card--green { background: var(--formica-green); color: #fff; }
-.formica-date-card--paper { background: var(--formica-cream); color: var(--formica-ink); }
+.formica-date-card--orange { background: var(--formica-primary, #ef5b2a); color: var(--formica-on-primary, #000); }
+.formica-date-card--green { background: var(--formica-feature, #37453d); color: var(--formica-on-feature, #fff); }
+.formica-date-card--paper { background: var(--formica-surface, #f4ead7); color: var(--formica-on-surface, #20231f); }
 
 .formica-date-card__date {
 	align-items: center;
@@ -186,12 +182,12 @@
 }
 
 .formica-dates--compact {
-	border-top: 2px solid var(--formica-ink);
+	border-top: 2px solid var(--formica-dates-border);
 }
 
 .formica-date-compact {
 	align-items: baseline;
-	border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+	border-bottom: 1px solid var(--formica-rule, color-mix(in srgb, currentColor 35%, transparent));
 	display: grid;
 	gap: 14px 24px;
 	grid-template-columns: 160px minmax(220px, 1fr) minmax(180px, auto);
